@@ -34,6 +34,7 @@ PLATFORMS: Final = ["sensor"]
 # Events
 EVENT_MINER_DISCOVERED: Final = "bitaxe_miner_discovered"
 EVENT_MINER_LOST: Final = "bitaxe_miner_lost"
+EVENT_BLOCK_FOUND: Final = "bitaxe_block_found"
 
 # Device info
 MANUFACTURER: Final = "Rigol"

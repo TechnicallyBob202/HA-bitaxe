@@ -14,7 +14,7 @@
 2. **Add Custom Repository** (if not in default HACS)
    - Click the three dots (⋮) in the top right
    - Select "Custom repositories"
-   - Repository: `https://github.com/YOUR_USERNAME/bitaxe-ha`
+   - Repository: `https://github.com/TechnicallyBob202/bitaxe-ha`
    - Category: Integration
    - Click "Add"
 
@@ -31,7 +31,7 @@
 
 5. **Add Integration**
    - Settings → Devices & Services
-   - Click "+ Create Automation" → "+ Add Integration"
+   - Click "+ Create Integration"
    - Search for "Bitaxe"
    - Configure subnet and scan settings
    - Select miners to monitor
@@ -53,7 +53,7 @@
 1. **Download the Integration**
    ```bash
    cd /tmp
-   git clone https://github.com/YOUR_USERNAME/bitaxe-ha
+   git clone https://github.com/TechnicallyBob202/bitaxe-ha
    cd bitaxe-ha
    ```
 
@@ -95,7 +95,7 @@
 
 6. **Add Integration**
    - Settings → Devices & Services
-   - Click "+ Create Automation" → "+ Add Integration"
+   - Click "+ Create Integration"
    - Search for "Bitaxe"
    - Complete the configuration wizard
 
@@ -161,7 +161,7 @@ docker run -d \
 3. **Download and Install**
    ```bash
    cd /tmp
-   git clone https://github.com/YOUR_USERNAME/bitaxe-ha
+   git clone https://github.com/TechnicallyBob202/bitaxe-ha
    cp -r bitaxe-ha/custom_components/bitaxe /config/custom_components/
    ```
 
@@ -180,7 +180,7 @@ ssh root@host
 cd /usr/share/hassio/homeassistant
 
 # Clone and copy
-git clone https://github.com/YOUR_USERNAME/bitaxe-ha /tmp/bitaxe-ha
+git clone https://github.com/TechnicallyBob202/bitaxe-ha /tmp/bitaxe-ha
 cp -r /tmp/bitaxe-ha/custom_components/bitaxe ./custom_components/
 
 # Restart container
@@ -372,7 +372,7 @@ rm -rf /config/custom_components/bitaxe
 
 ## Getting Help
 
-- **GitHub Issues**: https://github.com/YOUR_USERNAME/bitaxe-ha/issues
+- **GitHub Issues**: https://github.com/TechnicallyBob202/bitaxe-ha/issues
 - **Home Assistant Docs**: https://developers.home-assistant.io/
 - **Bitaxe Community**: https://github.com/skot/bitaxe
 - **HA Community Forum**: https://community.home-assistant.io/

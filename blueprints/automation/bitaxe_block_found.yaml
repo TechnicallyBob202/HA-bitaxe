@@ -1,0 +1,86 @@
+blueprint:
+  name: Bitaxe Block Found Notification
+  description: Send notification when a Bitaxe miner finds a block
+  domain: automation
+  input:
+    notification_service:
+      name: Notification Service
+      description: Select where to send notifications (e.g., notify.mobile_app_phone)
+      selector:
+        service:
+          domain: notify
+    include_details:
+      name: Include Mining Details
+      description: Show mining stats and hardware info
+      default: true
+      selector:
+        boolean:
+    include_pool_info:
+      name: Include Pool Information
+      description: Show pool URL, port, and WiFi SSID
+      default: true
+      selector:
+        boolean:
+
+trigger:
+  - platform: event
+    event_type: bitaxe_block_found
+
+condition: []
+
+action:
+  - choose:
+      - conditions: "{{ include_details and include_pool_info }}"
+        sequence:
+          - service: "{{ notification_service }}"
+            data:
+              title: "🎉 Bitcoin Block Found!"
+              message: |
+                Miner {{ trigger.event.data.miner_ip }} found a block!
+                
+                📊 **Mining Stats:**
+                • Total Blocks: {{ trigger.event.data.total_blocks }}
+                • Session Blocks: {{ trigger.event.data.blocks_this_session }}
+                • Hashrate: {{ (trigger.event.data.hashrate / 1000000) | round(2) }} MH/s
+                • Best Diff: {{ trigger.event.data.total_best_diff }}
+                
+                🌡️ **Hardware:**
+                • Temperature: {{ trigger.event.data.temperature }}°C
+                • Device: {{ trigger.event.data.device_model }}
+                
+                🌐 **Network:**
+                • WiFi: {{ trigger.event.data.ssid }}
+                • Pool: {{ trigger.event.data.stratum_url }}:{{ trigger.event.data.stratum_port }}
+                • Connected: {{ "Yes" if trigger.event.data.pool_connected else "No" }}
+      - conditions: "{{ include_details and not include_pool_info }}"
+        sequence:
+          - service: "{{ notification_service }}"
+            data:
+              title: "🎉 Bitcoin Block Found!"
+              message: |
+                Miner {{ trigger.event.data.miner_ip }} found a block!
+                
+                📊 **Mining Stats:**
+                • Total Blocks: {{ trigger.event.data.total_blocks }}
+                • Session Blocks: {{ trigger.event.data.blocks_this_session }}
+                • Hashrate: {{ (trigger.event.data.hashrate / 1000000) | round(2) }} MH/s
+                • Best Diff: {{ trigger.event.data.total_best_diff }}
+                
+                🌡️ **Hardware:**
+                • Temperature: {{ trigger.event.data.temperature }}°C
+                • Device: {{ trigger.event.data.device_model }}
+      - conditions: "{{ not include_details and include_pool_info }}"
+        sequence:
+          - service: "{{ notification_service }}"
+            data:
+              title: "🎉 Bitcoin Block Found!"
+              message: |
+                Miner {{ trigger.event.data.miner_ip }} found a block #{{ trigger.event.data.total_blocks }}
+                
+                Pool: {{ trigger.event.data.stratum_url }}:{{ trigger.event.data.stratum_port }}
+                WiFi: {{ trigger.event.data.ssid }}
+    default:
+      - service: "{{ notification_service }}"
+        data:
+          title: "🎉 Bitcoin Block Found!"
+          message: "Miner {{ trigger.event.data.miner_ip }} found block #{{ trigger.event.data.total_blocks }}"

@@ -14,23 +14,24 @@ A proper Home Assistant custom integration for monitoring Rigol Bitaxe Bitcoin m
 
 ## Installation
 
-### HACS (Recommended - when published)
+### HACS (Recommended)
 
-1. Open HACS
-2. Go to Integrations
-3. Click the three dots in the top right
-4. Select "Custom repositories"
-5. Add this repository URL
-6. Install "Bitaxe"
-7. Restart Home Assistant
+1. Open **HACS** in Home Assistant
+2. Go to **Integrations**
+3. Click the three dots (⋯) in the top right
+4. Select **"Custom repositories"**
+5. Add repository URL: `https://github.com/TechnicallyBob202/bitaxe-ha`
+6. Category: **Integration**
+7. Search for and install **"Bitaxe"**
+8. Restart Home Assistant
 
 ### Manual Installation
 
-1. Copy the `custom_components/bitaxe` folder to your Home Assistant's `config/custom_components/` directory
+1. Copy `custom_components/bitaxe` to your Home Assistant's `config/custom_components/` directory
 2. Restart Home Assistant
-3. Go to Configuration → Integrations
-4. Click "+ Add Integration"
-5. Search for "Bitaxe"
+3. Go to **Settings → Devices & Services**
+4. Click **"Create Integration"** or the **+** button
+5. Search for **"Bitaxe"** and complete the configuration
 
 ## Configuration
 
@@ -38,7 +39,7 @@ A proper Home Assistant custom integration for monitoring Rigol Bitaxe Bitcoin m
    - **Subnet**: The network subnet to scan (e.g., `192.168.1.0/24`)
    - **Concurrency**: Number of parallel probe connections (default: 20)
    - **Timeout**: Timeout per probe in seconds (default: 1.5)
-   - **Scan Interval**: How often to re-scan for new miners in seconds (0 to disable)
+   - **Scan Interval**: How often to re-scan for new miners in seconds (default: 3600, set to 0 to disable)
 
 2. Click "Next" to start discovery
 
@@ -338,7 +339,7 @@ If your Bitaxe firmware doesn't support these endpoints, please check the firmwa
 ### Network Efficiency
 - Async concurrent probing (configurable concurrency limit)
 - Per-host timeout to avoid hanging
-- Signature detection (fast) before full verification (slower)
+- API verification before full status polling
 
 ## Support
 
@@ -347,13 +348,16 @@ If your Bitaxe firmware doesn't support these endpoints, please check the firmwa
 
 ## License
 
-MIT License
+MIT License - See LICENSE file for details
 
 ## Contributing
 
-Contributions are welcome! Please submit pull requests or open issues on GitHub.
+Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
 ## Changelog
+
+### Version 0.1.1
+- Bug fixes and improvements
 
 ### Version 0.1.0 (Initial Release)
 - Network discovery scanning

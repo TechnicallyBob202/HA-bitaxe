@@ -25,6 +25,7 @@ from .const import (
     DEFAULT_POLL_INTERVAL,
     EVENT_MINER_DISCOVERED,
     EVENT_MINER_LOST,
+    EVENT_BLOCK_FOUND,
     MANUFACTURER,
     MODEL_BITAXE,
 )
@@ -60,6 +61,12 @@ class BitaxeCoordinator(DataUpdateCoordinator):
         
         # Miner data: {ip: {stats}}
         self.miners: dict[str, dict[str, Any]] = {}
+        
+        # Track block counts for detection
+        self.previous_block_counts: dict[str, int] = {}
+        
+        # Track block counts for detection
+        self.previous_block_counts: dict[str, int] = {}
         
         # Periodic scan task
         self._scan_task: asyncio.Task | None = None
@@ -103,10 +110,36 @@ class BitaxeCoordinator(DataUpdateCoordinator):
         
         results = await asyncio.gather(*tasks, return_exceptions=True)
         
-        # Update miners dict
+        # Update miners dict and check for block hits
         for ip, data in zip(self.active_miners, results):
             if isinstance(data, dict):
                 self.miners[ip] = data
+                
+                # Check for block hits
+                total_blocks = data.get("totalFoundBlocks", 0)
+                previous_blocks = self.previous_block_counts.get(ip, 0)
+                
+                if total_blocks > previous_blocks:
+                    _LOGGER.info("Block found on miner %s! Total blocks: %s", ip, total_blocks)
+                    self.hass.bus.async_fire(
+                        EVENT_BLOCK_FOUND,
+                        {
+                            "miner_ip": ip,
+                            "total_blocks": total_blocks,
+                            "blocks_this_session": data.get("foundBlocks", 0),
+                            "device_model": data.get("deviceModel", "Unknown"),
+                            "hashrate": data.get("hashRate", 0),
+                            "total_best_diff": data.get("totalBestDiff", 0),
+                            "best_diff": data.get("bestDiff", 0),
+                            "temperature": data.get("temp", 0),
+                            "pool_connected": data.get("stratum", {}).get("pools", [{}])[0].get("connected", False),
+                            "ssid": data.get("ssid", "Unknown"),
+                            "stratum_url": data.get("stratumURL", "Unknown"),
+                            "stratum_port": data.get("stratumPort", 0),
+                        },
+                    )
+                
+                self.previous_block_counts[ip] = total_blocks
             else:
                 # Error fetching data, mark as unavailable but keep entry
                 self.miners[ip] = {"available": False, "error": str(data)}
