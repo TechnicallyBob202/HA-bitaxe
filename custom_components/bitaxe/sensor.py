@@ -44,6 +44,23 @@ class BitaxeSensorEntityDescription(
     attr_fn: Callable[[dict[str, Any]], dict[str, Any]] | None = None
 
 
+def _calculate_efficiency(data: dict[str, Any]) -> float:
+    """Calculate J/GH from power and hashrate."""
+    try:
+        power = data.get("power", 0)
+        hashrate = data.get("hashRate", 0)
+        
+        if hashrate > 0:
+            # Efficiency = Power (W) / Hashrate (GH/s)
+            # hashRate is in H/s, need to convert to GH/s
+            hashrate_gh = hashrate / 1_000_000_000
+            efficiency = power / hashrate_gh
+            return round(efficiency, 2)
+    except (ValueError, ZeroDivisionError):
+        pass
+    return 0
+
+
 # Sensor descriptions
 SENSOR_TYPES: tuple[BitaxeSensorEntityDescription, ...] = (
     BitaxeSensorEntityDescription(
@@ -52,7 +69,7 @@ SENSOR_TYPES: tuple[BitaxeSensorEntityDescription, ...] = (
         native_unit_of_measurement="H/s",
         state_class=SensorStateClass.MEASUREMENT,
         icon="mdi:chip",
-        value_fn=lambda data: data.get("hashrate", 0),
+        value_fn=lambda data: data.get("hashRate", 0),
     ),
     BitaxeSensorEntityDescription(
         key="uptime",
@@ -60,7 +77,7 @@ SENSOR_TYPES: tuple[BitaxeSensorEntityDescription, ...] = (
         native_unit_of_measurement=UnitOfTime.SECONDS,
         state_class=SensorStateClass.TOTAL_INCREASING,
         icon="mdi:clock-outline",
-        value_fn=lambda data: data.get("uptime", 0),
+        value_fn=lambda data: data.get("uptimeSeconds", 0),
     ),
     BitaxeSensorEntityDescription(
         key="temperature",
@@ -84,7 +101,7 @@ SENSOR_TYPES: tuple[BitaxeSensorEntityDescription, ...] = (
         native_unit_of_measurement="J/GH",
         state_class=SensorStateClass.MEASUREMENT,
         icon="mdi:leaf",
-        value_fn=lambda data: data.get("efficiency", 0),
+        value_fn=lambda data: _calculate_efficiency(data),
     ),
     BitaxeSensorEntityDescription(
         key="asic_count",
