@@ -392,6 +392,9 @@ Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for gui
 ## Changelog
 
 ### Version 0.2.1
+- Fixed Connected sensor
+
+### Version 0.2.1
 - Added stratum pool URL and port monitoring (see what you're mining)
 - Fixed totalBestDiff to correctly pull from stratum data
 - Replaced pool ping sensors with pool connection info
