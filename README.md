@@ -51,14 +51,49 @@ A proper Home Assistant custom integration for monitoring Rigol Bitaxe Bitcoin m
 
 ## Sensors
 
-For each discovered miner (e.g., `192.168.1.105`), you get:
+For each discovered miner (e.g., `192.168.1.105`), you get **25 sensor entities**:
 
-- `sensor.bitaxe_192_168_1_105_hashrate` - Current hashrate (H/s)
-- `sensor.bitaxe_192_168_1_105_uptime` - Miner uptime (seconds)
-- `sensor.bitaxe_192_168_1_105_temperature` - Device temperature (°C)
-- `sensor.bitaxe_192_168_1_105_power_consumption` - Power draw (W)
-- `sensor.bitaxe_192_168_1_105_efficiency` - J/GH (Joules per Gigahash)
-- `sensor.bitaxe_192_168_1_105_asic_count` - Number of ASIC chips
+### Device Info
+- `device_model` - Miner model
+- `connected` - Pool connection status
+
+### Mining Statistics
+- `hashrate` - Current hashrate (H/s)
+- `shares_accepted` - Total accepted shares
+- `shares_rejected` - Total rejected shares
+- `best_diff` - Best share difficulty
+- `total_best_diff` - Total best difficulty (all time)
+- `pool_difficulty` - Current pool difficulty
+
+### Block Detection
+- `blocks_found` - Blocks found on current pool
+- `total_blocks_found` - Total blocks found (all time)
+
+### Temperature
+- `temperature` - Device temperature (°C)
+- `vr_temperature` - Voltage regulator temperature (°C)
+
+### Power & Voltage
+- `power_consumption` - Current power draw (W)
+- `core_voltage` - Core voltage setting (mV)
+- `core_voltage_actual` - Actual core voltage (mV)
+
+### Cooling
+- `fan_speed` - Fan speed (%)
+- `fan_rpm` - Fan speed (RPM)
+- `manual_fan_speed` - Manual fan override (%)
+
+### System
+- `uptime` - Miner uptime (seconds)
+- `frequency` - Core frequency (MHz)
+- `asic_count` - Number of ASIC chips
+- `efficiency` - J/GH (Joules per Gigahash)
+
+### Network
+- `wifi_rssi` - WiFi signal strength (dBm)
+- `ssid` - WiFi network name
+- `pool_ping_rtt` - Pool ping latency (ms)
+- `pool_ping_loss` - Pool ping loss (%)
 
 ## Events
 
