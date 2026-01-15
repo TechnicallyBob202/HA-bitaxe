@@ -10,8 +10,8 @@ from typing import Any
 import aiohttp
 
 from homeassistant.core import HomeAssistant, callback
+from homeassistant.helpers.device_registry import async_get as async_get_device_registry
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
-from homeassistant.helpers.device_registry import DeviceRegistry
 
 from .const import (
     API_INFO_ENDPOINT,
@@ -225,7 +225,7 @@ class BitaxeCoordinator(DataUpdateCoordinator):
 
     async def _register_devices(self) -> None:
         """Register miners as devices in Home Assistant."""
-        device_registry = self.hass.helpers.device_registry.async_get(self.hass)
+        device_registry = async_get_device_registry(self.hass)
         
         for ip in self.configured_miners:
             device_registry.async_get_or_create(
