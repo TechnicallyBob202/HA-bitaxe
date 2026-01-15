@@ -391,8 +391,14 @@ Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for gui
 
 ## Changelog
 
-### Version 0.1.1
-- Bug fixes and improvements
+### Version 0.2.0
+- Expanded to 25 comprehensive sensors per miner
+- Added block detection (foundBlocks, totalFoundBlocks)
+- Added mining statistics (shares, difficulty tracking)
+- Added network monitoring (WiFi signal, pool ping)
+- Added thermal monitoring (VR temperature, core voltage actual)
+- Added fan control feedback (manual override, RPM)
+- Improved device information (model, connection status)
 
 ### Version 0.1.0 (Initial Release)
 - Network discovery scanning

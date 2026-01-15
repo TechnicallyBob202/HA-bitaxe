@@ -29,7 +29,7 @@ User Config → Discovery Scan → Select Miners → Polling Loop
 
 ✅ **Network Discovery**
 - Async concurrent subnet scanning
-- Signature detection + API verification
+- API verification
 - Configurable timeout and concurrency
 
 ✅ **Configuration Flow**
@@ -44,13 +44,14 @@ User Config → Discovery Scan → Select Miners → Polling Loop
 - Device registry integration
 - Error handling for offline miners
 
-✅ **Sensor Entities**
-- Hashrate (H/s)
-- Temperature (°C)
-- Power (W)
-- Efficiency (J/GH)
-- Uptime (seconds)
-- ASIC count
+✅ **Sensor Entities** (25 sensors per miner)
+- Mining stats (hashrate, shares, difficulty, blocks)
+- Temperature monitoring (device, VR)
+- Power & voltage (consumption, core voltage)
+- Cooling (fan speed, RPM, manual override)
+- System (uptime, frequency, ASIC count, efficiency)
+- Network (WiFi signal, pool ping latency/loss, SSID)
+- Device info (model, connection status)
 
 ✅ **Events**
 - `bitaxe_miner_discovered` - When new miner found
@@ -70,7 +71,7 @@ User Config → Discovery Scan → Select Miners → Polling Loop
 cp -r custom_components/bitaxe ~/.homeassistant/custom_components/
 
 # Restart HA
-# Then add via Settings → Integrations
+# Then add via Settings → Devices & Services
 ```
 
 ### Key Files to Modify
@@ -85,11 +86,25 @@ cp -r custom_components/bitaxe ~/.homeassistant/custom_components/
 ```python
 # In sensor.py, add to SENSOR_TYPES tuple:
 
-NMMinerSensorEntityDescription(
+BitaxeSensorEntityDescription(
     key="my_sensor",
-    name="My Sensor",
+    name="My Sensor Name",
     native_unit_of_measurement="unit",
+    state_class=SensorStateClass.MEASUREMENT,
+    icon="mdi:icon-name",
     value_fn=lambda data: data.get("api_field", 0),
+),
+```
+
+Example from actual integration:
+```python
+BitaxeSensorEntityDescription(
+    key="pool_ping_rtt",
+    name="Pool Ping RTT",
+    native_unit_of_measurement="ms",
+    state_class=SensorStateClass.MEASUREMENT,
+    icon="mdi:ping",
+    value_fn=lambda data: data.get("lastpingrtt", 0),
 ),
 ```
 
@@ -97,8 +112,8 @@ NMMinerSensorEntityDescription(
 
 ```python
 # In discovery.py, modify _probe_ip():
-# - Change DISCOVERY_SIGNATURE constant
-# - Modify _verify_bitaxe() to check different API endpoint
+# - Change API_INFO_ENDPOINT constant
+# - Modify logic to check different fields
 # - Adjust timeout or connection logic
 ```
 
@@ -109,14 +124,13 @@ bitaxe:
   subnet: "192.168.1.0/24"     # Network to scan
   concurrency: 20              # Parallel probes
   timeout: 1.5                 # Seconds per probe
-  scan_interval: 3600          # Hours between scans (0=disabled)
+  scan_interval: 3600          # Seconds between scans (0=disabled)
   poll_interval: 30            # Seconds between data polls
 ```
 
 ## API Endpoints Assumed
 
 ```
-GET /                           # Web interface (signature detection)
 GET /api/system/info           # System information
 GET /api/system/metrics        # Runtime metrics/stats
 ```
@@ -134,7 +148,8 @@ If your Bitaxe firmware has different endpoints, modify in `const.py`.
    - Create template sensors for aggregation
 
 3. **Add automations**
-   - See examples in README.md
+   - Use block detection for notifications
+   - Monitor temperature/efficiency
    - Use events for miner discovery/loss
 
 4. **Publish to HACS**
@@ -150,12 +165,13 @@ bitaxe-ha/
 │   ├── config_flow.py       ← UI configuration
 │   ├── coordinator.py       ← Data management + polling
 │   ├── discovery.py         ← Network scanning
-│   ├── sensor.py            ← Sensor entities
+│   ├── sensor.py            ← Sensor entities (25 sensors)
 │   ├── const.py             ← Constants
 │   └── manifest.json        ← Integration metadata
 ├── README.md                ← User documentation
 ├── INSTALLATION.md          ← Setup guide
 ├── CONTRIBUTING.md          ← Dev guide
+├── QUICKSTART.md            ← This file
 └── PROJECT_STRUCTURE.md     ← Detailed architecture
 ```
 
@@ -220,11 +236,11 @@ curl http://MINER_IP/api/system/metrics
 **Miners not found?**
 - Check subnet format: `192.168.1.0/24` (CIDR)
 - Verify miner IP is in subnet
-- Test: `curl http://MINER_IP/`
+- Test: `curl http://MINER_IP/api/system/info`
 
 **Sensors unavailable?**
 - Wait 30+ seconds for first poll
-- Check API endpoints: `/api/system/info`
+- Check API endpoints are accessible
 - Review Home Assistant logs
 
 **High CPU during scan?**
@@ -238,4 +254,4 @@ curl http://MINER_IP/api/system/metrics
 
 ---
 
-Ready to customize? Start with `discovery.py` to adapt to your specific Bitaxe firmware! 🚀
+Ready to customize? Start with `sensor.py` to add new sensors or `discovery.py` to adapt to your specific Bitaxe firmware! 🚀
