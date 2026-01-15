@@ -1,0 +1,14 @@
+{
+  "domain": "bitaxe",
+  "name": "Bitaxe",
+  "icon": "mdi:pickaxe",
+  "codeowners": ["@YOUR_GITHUB_USERNAME"],
+  "config_flow": true,
+  "documentation": "https://github.com/YOUR_USERNAME/bitaxe-ha",
+  "issue_tracker": "https://github.com/YOUR_USERNAME/bitaxe-ha/issues",
+  "integration_type": "hub",
+  "iot_class": "local_polling",
+  "requirements": ["aiohttp"],
+  "version": "0.1.0",
+  "homeassistant": "2024.1.0"
+}
