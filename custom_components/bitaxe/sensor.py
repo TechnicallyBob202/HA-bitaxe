@@ -74,7 +74,7 @@ SENSOR_TYPES: tuple[BitaxeSensorEntityDescription, ...] = (
         key="connected",
         name="Connected",
         icon="mdi:lan-connect",
-        value_fn=lambda data: "Yes" if data.get("connected", False) else "No",
+        value_fn=lambda data: "Yes" if data.get("stratum", {}).get("pools", [{}])[0].get("connected", False) else "No",
     ),
     
     # Mining Stats
