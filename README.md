@@ -81,7 +81,7 @@ For each discovered miner (e.g., `192.168.1.105`), you get **25 sensor entities*
 ### Cooling
 - `fan_speed` - Fan speed (%)
 - `fan_rpm` - Fan speed (RPM)
-- `manual_fan_speed` - Manual fan override (%)
+- `autofanspeed` - Auto fan speed mode
 
 ### System
 - `uptime` - Miner uptime (seconds)
@@ -92,8 +92,8 @@ For each discovered miner (e.g., `192.168.1.105`), you get **25 sensor entities*
 ### Network
 - `wifi_rssi` - WiFi signal strength (dBm)
 - `ssid` - WiFi network name
-- `pool_ping_rtt` - Pool ping latency (ms)
-- `pool_ping_loss` - Pool ping loss (%)
+- `stratum_url` - Mining pool stratum URL
+- `stratum_port` - Mining pool stratum port
 
 ## Events
 
@@ -391,14 +391,12 @@ Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for gui
 
 ## Changelog
 
-### Version 0.2.0
-- Expanded to 25 comprehensive sensors per miner
-- Added block detection (foundBlocks, totalFoundBlocks)
-- Added mining statistics (shares, difficulty tracking)
-- Added network monitoring (WiFi signal, pool ping)
-- Added thermal monitoring (VR temperature, core voltage actual)
-- Added fan control feedback (manual override, RPM)
-- Improved device information (model, connection status)
+### Version 0.2.1
+- Added stratum pool URL and port monitoring (see what you're mining)
+- Fixed totalBestDiff to correctly pull from stratum data
+- Replaced pool ping sensors with pool connection info
+- Replaced manual fan override with auto fan speed mode sensor
+- 25 comprehensive sensors with mining pool visibility
 
 ### Version 0.1.0 (Initial Release)
 - Network discovery scanning

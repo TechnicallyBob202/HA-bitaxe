@@ -112,7 +112,7 @@ SENSOR_TYPES: tuple[BitaxeSensorEntityDescription, ...] = (
         name="Total Best Difficulty",
         state_class=SensorStateClass.MEASUREMENT,
         icon="mdi:star-circle",
-        value_fn=lambda data: data.get("totalBestDiff", 0),
+        value_fn=lambda data: data.get("stratum", {}).get("totalBestDiff", 0),
     ),
     BitaxeSensorEntityDescription(
         key="pool_difficulty",
@@ -201,12 +201,11 @@ SENSOR_TYPES: tuple[BitaxeSensorEntityDescription, ...] = (
         value_fn=lambda data: data.get("fanrpm", 0),
     ),
     BitaxeSensorEntityDescription(
-        key="manual_fan_speed",
-        name="Manual Fan Speed Override",
-        native_unit_of_measurement=PERCENTAGE,
+        key="autofanspeed",
+        name="Auto Fan Speed Mode",
         state_class=SensorStateClass.MEASUREMENT,
-        icon="mdi:fan",
-        value_fn=lambda data: data.get("manualFanSpeed", 0),
+        icon="mdi:fan-auto",
+        value_fn=lambda data: data.get("autofanspeed", 0),
     ),
     
     # System
@@ -244,7 +243,7 @@ SENSOR_TYPES: tuple[BitaxeSensorEntityDescription, ...] = (
         value_fn=lambda data: _calculate_efficiency(data),
     ),
     
-    # Network
+    # Network & Pool
     BitaxeSensorEntityDescription(
         key="wifi_rssi",
         name="WiFi Signal Strength",
@@ -261,20 +260,16 @@ SENSOR_TYPES: tuple[BitaxeSensorEntityDescription, ...] = (
         value_fn=lambda data: data.get("ssid", "Unknown"),
     ),
     BitaxeSensorEntityDescription(
-        key="pool_ping_rtt",
-        name="Pool Ping RTT",
-        native_unit_of_measurement="ms",
-        state_class=SensorStateClass.MEASUREMENT,
-        icon="mdi:ping",
-        value_fn=lambda data: data.get("lastpingrtt", 0),
+        key="stratum_url",
+        name="Stratum URL",
+        icon="mdi:server",
+        value_fn=lambda data: data.get("stratumURL", "Unknown"),
     ),
     BitaxeSensorEntityDescription(
-        key="pool_ping_loss",
-        name="Pool Ping Loss",
-        native_unit_of_measurement=PERCENTAGE,
-        state_class=SensorStateClass.MEASUREMENT,
-        icon="mdi:alert-circle",
-        value_fn=lambda data: data.get("recentpingloss", 0),
+        key="stratum_port",
+        name="Stratum Port",
+        icon="mdi:server-network",
+        value_fn=lambda data: data.get("stratumPort", 0),
     ),
 )
 

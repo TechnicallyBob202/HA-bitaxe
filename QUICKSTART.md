@@ -48,9 +48,9 @@ User Config → Discovery Scan → Select Miners → Polling Loop
 - Mining stats (hashrate, shares, difficulty, blocks)
 - Temperature monitoring (device, VR)
 - Power & voltage (consumption, core voltage)
-- Cooling (fan speed, RPM, manual override)
+- Cooling (fan speed, RPM, auto mode)
 - System (uptime, frequency, ASIC count, efficiency)
-- Network (WiFi signal, pool ping latency/loss, SSID)
+- Network (WiFi signal, SSID, stratum URL/port)
 - Device info (model, connection status)
 
 ✅ **Events**
