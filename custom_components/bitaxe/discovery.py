@@ -8,11 +8,7 @@ from typing import Any
 
 import aiohttp
 
-from .const import (
-    API_INFO_ENDPOINT,
-    DISCOVERY_ENDPOINT,
-    DISCOVERY_SIGNATURE,
-)
+from .const import API_INFO_ENDPOINT
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -69,26 +65,22 @@ class BitaxeDiscovery:
         """
         async with self.sem:
             try:
-                url = f"http://{ip}{DISCOVERY_ENDPOINT}"
+                # Direct API probe - much simpler than homepage parsing
+                url = f"http://{ip}{API_INFO_ENDPOINT}"
                 
-                # Use shorter timeout for initial discovery
                 timeout = aiohttp.ClientTimeout(
                     total=self.timeout,
                     connect=self.timeout / 2,
-                    sock_read=self.timeout / 2,
                 )
                 
                 async with aiohttp.ClientSession(timeout=timeout) as session:
-                    async with session.get(url, allow_redirects=False) as response:
-                        # Don't need to read full content, just check signature
-                        # BitAxe web interface should contain "NerdQAxe" or similar
-                        text = await response.text(errors="ignore")
-                        
-                        if DISCOVERY_SIGNATURE in text:
-                            _LOGGER.debug("Found miner at %s", ip)
+                    async with session.get(url) as response:
+                        if response.status == 200:
+                            data = await response.json()
                             
-                            # Verify it's actually a Bitaxe by checking API endpoint
-                            if await self._verify_bitaxe(ip):
+                            # Check for expected fields in Bitaxe API response
+                            if "deviceModel" in data and "hashRate" in data:
+                                _LOGGER.debug("Found Bitaxe miner at %s: %s", ip, data.get("deviceModel"))
                                 return ip
                         
             except asyncio.TimeoutError:
@@ -100,29 +92,6 @@ class BitaxeDiscovery:
                 _LOGGER.debug("Unexpected error probing %s: %s", ip, err)
             
             return None
-
-    async def _verify_bitaxe(self, ip: str) -> bool:
-        """Verify that IP is actually a Bitaxe by checking API."""
-        try:
-            url = f"http://{ip}{API_INFO_ENDPOINT}"
-            
-            timeout = aiohttp.ClientTimeout(
-                total=self.timeout,
-                connect=self.timeout / 2,
-            )
-            
-            async with aiohttp.ClientSession(timeout=timeout) as session:
-                async with session.get(url) as response:
-                    if response.status == 200:
-                        data = await response.json()
-                        # Basic validation - should have expected fields
-                        if "version" in data or "uptime" in data:
-                            _LOGGER.debug("Verified Bitaxe at %s", ip)
-                            return True
-        except Exception as err:  # pylint: disable=broad-except
-            _LOGGER.debug("Could not verify API at %s: %s", ip, err)
-        
-        return False
 
 
 async def discover_miners(
