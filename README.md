@@ -267,6 +267,26 @@ template:
           {{ (ns.total / ns.count) | round(2) if ns.count > 0 else 0 }}
 ```
 
+### Miners Online (Connected to Pool)
+
+```yaml
+template:
+  - sensor:
+      - name: "Bitaxe Miners Online"
+        unique_id: bitaxe_miners_online
+        state_class: measurement
+        state: >
+          {% set ns = namespace(count=0) %}
+          {% for state in states.sensor 
+             if 'bitaxe' in state.entity_id 
+             and 'connected' in state.entity_id 
+             and state.state == 'Yes' %}
+            {% set ns.count = ns.count + 1 %}
+          {% endfor %}
+          {{ ns.count }}
+        icon: mdi:server-network
+```
+
 ## Dashboard Example
 
 ```yaml
@@ -390,9 +410,6 @@ MIT License - See LICENSE file for details
 Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
 ## Changelog
-
-### Version 0.2.1
-- Fixed Connected sensor
 
 ### Version 0.2.1
 - Added stratum pool URL and port monitoring (see what you're mining)

@@ -4,11 +4,11 @@
   "icon": "mdi:pickaxe",
   "codeowners": ["@TechnicallyBob202"],
   "config_flow": true,
-  "documentation": "https://github.com/TechnicallyBob202/bitaxe-ha",
-  "issue_tracker": "https://github.com/TechnicallyBob202/bitaxe-ha/issues",
-  "integration_type": "service",
+  "documentation": "https://github.com/TechnicallyBob202/HA-bitaxe",
+  "issue_tracker": "https://github.com/TechnicallyBob202/HA-bitaxe/issues",
+  "integration_type": "entry",
   "iot_class": "local_polling",
   "requirements": ["aiohttp"],
-  "version": "0.2.2",
+  "version": "0.2.3",
   "homeassistant": "2024.1.0"
 }
